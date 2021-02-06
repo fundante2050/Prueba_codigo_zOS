@@ -3,7 +3,7 @@
 //*SMFSEP1    PROC  V='-1'                                                      
 //*                                                                             
 //*       GIT GIT GIT
-
+video 3 cambio 4 
                                                                       
 //********************************************************************          
 //*                  EXTRACCION REGISTROS CICS Y R30                 *          
