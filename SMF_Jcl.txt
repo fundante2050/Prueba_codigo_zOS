@@ -4,7 +4,7 @@
 //*    1. DB2                                                        *
 //********************************************************************
 IEFC653I SUBSTITUTION JCL - NOTIFY=TI6LRA,TIME=1440,CLASS=O           
-//SMFDMP   EXEC PGM=IFASMFDP,REGION=0M                                git git git
+//SMFDMP   EXEC PGM=IFASMFDP,REGION=0M                         fundante    
 //********************************************************************
 //* DEPURAR EL WORKAP ANTES DE CORRER                                *
 //********************************************************************
