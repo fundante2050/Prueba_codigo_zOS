@@ -1,0 +1,218 @@
+//*SMFSEP   PROC  DS='SYSBKR.SMFDMP.PROD.DIA.G3650V00'                          
+//SMFSEP   PROC  DS='SYSBKR.SMFDMP.PROD.DIA(0)'                                 
+//*SMFSEP1    PROC  V='-1'                                                      
+//*                                                                             
+//*                                                                             
+//********************************************************************          
+//*                  EXTRACCION REGISTROS CICS Y R30                 *          
+//* CICS             OUTDD(OUTDD1,TYPE(110)                          *          
+//* R30              OUTDD(OUTDD1,TYPE(30))                          *          
+//********************************************************************          
+//*                                                                             
+//SMFSEP05 EXEC PGM=IFASMFDP,REGION=0M                                          
+//*                                                                             
+//*IN      DD DISP=SHR,DCB=BUFNO=80,DSN=SYSBKR.SMFDMP.PROD.DIA(&V)              
+//IN       DD DISP=SHR,DCB=(BUFNO=80),DSN=&DS                                   
+//*                                                                             
+//CICS     DD DSN=SYSBKR.SMFSEP.VTA1.PRD.CICS.SORT(+1),                         
+//            DISP=(NEW,CATLG,DELETE),                                          
+//            UNIT=DDVTA1,                                                      
+//            LABEL=(1,SL,EXPDT=99000),                                         
+//            DCB=(GDG.MODEL,RECFM=VB,BLKSIZE=32760,BUFNO=08)                   
+//*                                                                             
+//R30      DD  DSN=SYSBKR.SMFSEP.VTA1.PRD.R30(+1),                              
+//             DISP=(NEW,CATLG,DELETE),                                         
+//             UNIT=DDVTA1, VOL=(,,,99),                                        
+//             LABEL=(1,SL,EXPDT=99000),                                        
+//             DCB=(GDG.MODEL,BLKSIZE=32760,BUFNO=80)                           
+//*                                                                             
+//R6       DD DSN=GXGES.ANDPRD.SMF.DIA.R6(+1),                                  
+//            DISP=(NEW,CATLG,DELETE),                                          
+//            UNIT=WORKGE,                                                      
+//            SPACE=(TRK,(150,150),RLSE),                                       
+//            DCB=(GDG.MODEL,BLKSIZE=27500,BUFNO=08)                            
+//*                                                                             
+//RMF      DD DSN=SYSBKR.SMFSEP.DDVTA1.PROD.RMF(+1),                            
+//            DISP=(NEW,CATLG,DELETE),                                          
+//            UNIT=DDVTA1,  VOL=(,,,99),                                        
+//            LABEL=(1,SL,EXPDT=99000),                                         
+//            DCB=(GDG.MODEL,BLKSIZE=32760,BUFNO=80)                            
+//*                                                                             
+//SCRT     DD DSN=GXGES.ANDPRD.SMF.DIA.SCRT(+1),                                
+//            DISP=(NEW,CATLG,DELETE),                                          
+//            UNIT=WORKGE,                                                      
+//            SPACE=(TRK,(15,150),RLSE),                                        
+//            DCB=(GDG.MODEL,BLKSIZE=27500,BUFNO=08)                            
+//* ----+----1----+----2----+----3----+----4----+----5                          
+//*SYSV     DD DSN=SYSBKR.SMFSEP.VTA1.PRD.SYSV.SORT(+1),                        
+//SYSV     DD DSN=SYSBKR.SMFSEP.DDVTA1.PROD.SYSV(+1),                           
+//            DISP=(NEW,CATLG,DELETE),                                          
+//            UNIT=DDVTA1,  VOL=(,,,99),                                        
+//            LABEL=(1,SL,EXPDT=99000),                                         
+//            DCB=(GDG.MODEL,BLKSIZE=32760,BUFNO=08)                            
+//*                                                                             
+//RACF     DD DSN=SYSBKR.SMFSEP.DDVTA1.PROD.RACF(+1),                           
+//            DISP=(NEW,CATLG,DELETE),                                          
+//            UNIT=DDVTA1,  VOL=(,,,99),                                        
+//            LABEL=(1,SL,EXPDT=99000),                                         
+//            DCB=(GDG.MODEL,BLKSIZE=32760,BUFNO=08)                            
+//*                                                                             
+//DB2      DD DSN=SYSBKR.SMFSEP.DDVTA1.PROD.DB2(+1),                            
+//            DISP=(NEW,CATLG,DELETE),                                          
+//            UNIT=DDVTA1,  VOL=(,,,99),                                        
+//            LABEL=(1,SL,EXPDT=99000),                                         
+//            DCB=(GDG.MODEL,BLKSIZE=32760,BUFNO=08)                            
+//*                                                                             
+//R119     DD DSN=SYSBKR.SMFSEP.PROD.DIA.R119(+1),                              
+//            DISP=(NEW,CATLG,DELETE),                                          
+//            UNIT=DDVTA1,  VOL=(,,,99),                                        
+//            LABEL=(1,SL,EXPDT=99000),                                         
+//            DCB=(GDG.MODEL,BLKSIZE=32760,BUFNO=08)                            
+//*                                                                             
+//SYSPRINT DD SYSOUT=X                                                          
+//*YSIN    DD DISP=SHR,DSN=SYS1.SOPTEC.CARDS(SMFSEP2F)                          
+//SYSIN    DD DISP=SHR,DSN=SYS1.SOPTEC.CARDS(SMFSEP2E)                          
+//         DD DISP=SHR,DSN=SYS1.SOPTEC.CARDS($DB2)                              
+//         DD DISP=SHR,DSN=SYS1.SOPTEC.CARDS($R119)                             
+//*                                                                             
+//********************************************************************          
+//*                   SORTSEP                                        *          
+//*            SMFSORT PROCESSING RMF                                *          
+//********************************************************************          
+//SMFSEP04 EXEC PGM=SORT,REGION=0M                                              
+//**                                                                            
+//SORTIN   DD DISP=SHR,DSN=SYSBKR.SMFSEP.DDVTA1.PROD.RMF(+1)                    
+//**                                                                            
+//SORTOUT  DD DSN=SYSBKR.SMFSEP.PROD.RMF(+1),                                   
+//            DISP=(NEW,CATLG,DELETE),                                          
+//            UNIT=DDVTA1,  VOL=(,,,99),                                        
+//            LABEL=(1,SL,EXPDT=99000),                                         
+//            DCB=(GDG.MODEL,BLKSIZE=32760,BUFNO=80)                            
+//*                                                                             
+//*SORTOUT  DD DSN=GXGES.ANDPRD.SMF.DIA.RMF(+1),                                
+//*            DISP=(NEW,CATLG,DELETE),                                         
+//*            UNIT=WORKGE,                                                     
+//*            SPACE=(TRK,(5000,450),RLSE),                                     
+//*            DCB=(GDG.MODEL,BLKSIZE=27500,BUFNO=08)                           
+//*                                                                             
+//SORTWK01 DD UNIT=TEMPROD,SPACE=(CYL,(150,50))                                 
+//SORTWK02 DD UNIT=TEMPROD,SPACE=(CYL,(150,50))                                 
+//SORTWK03 DD UNIT=TEMPROD,SPACE=(CYL,(150,50))                                 
+//SORTWK04 DD UNIT=TEMPROD,SPACE=(CYL,(150,50))                                 
+//SORTWK05 DD UNIT=TEMPROD,SPACE=(CYL,(150,50))                                 
+//SORTWK06 DD UNIT=TEMPROD,SPACE=(CYL,(150,50))                                 
+//SORTWK07 DD UNIT=TEMPROD,SPACE=(CYL,(150,50))                                 
+//SORTWK08 DD UNIT=TEMPROD,SPACE=(CYL,(150,50))                                 
+//*                                                                             
+//SYSPRINT DD SYSOUT=X                                                          
+//SYSOUT   DD SYSOUT=X                                                          
+//SYSIN    DD DISP=SHR,DSN=SYS1.SOPTEC.CARDS(SMFSEP1A)                          
+//*                                                                             
+//********************************************************************          
+//*                   SORTSEP                                        *          
+//*            SMFSORT PROCESSING CICS                               *          
+//********************************************************************          
+//SMFSEP03 EXEC PGM=SORT,REGION=0M                                              
+//**                                                                            
+//SORTIN   DD DISP=SHR,DSN=SYSBKR.SMFSEP.VTA1.PRD.CICS.SORT(+1)                 
+//**                                                                            
+//SORTOUT  DD DSN=SYSBKR.SMFSEP.DDVTA1.PROD.CICS(+1),                           
+//            DISP=(NEW,CATLG,DELETE),                                          
+//            UNIT=DDVTA1,                                                      
+//            LABEL=(1,SL,EXPDT=99000),                                         
+//            DCB=(GDG.MODEL,RECFM=VBS,BLKSIZE=32760,BUFNO=08)                  
+//*                                                                             
+//SORTWK01 DD UNIT=TEMPROD,SPACE=(CYL,(750,250))                                
+//SORTWK02 DD UNIT=TEMPROD,SPACE=(CYL,(750,250))                                
+//SORTWK03 DD UNIT=TEMPROD,SPACE=(CYL,(750,250))                                
+//SORTWK04 DD UNIT=TEMPROD,SPACE=(CYL,(750,250))                                
+//SORTWK05 DD UNIT=TEMPROD,SPACE=(CYL,(750,250))                                
+//SORTWK06 DD UNIT=TEMPROD,SPACE=(CYL,(750,250))                                
+//SORTWK07 DD UNIT=TEMPROD,SPACE=(CYL,(750,250))                                
+//SORTWK08 DD UNIT=TEMPROD,SPACE=(CYL,(750,250))                                
+//*                                                                             
+//SYSPRINT DD SYSOUT=X                                                          
+//SYSOUT   DD SYSOUT=X                                                          
+//SYSIN    DD DISP=SHR,DSN=SYS1.SOPTEC.CARDS(SMFSEP1A)                          
+//*                                                                             
+//********************************************************************          
+//*                  EXTRACCION REGISTROS CICS Y R30                 *          
+//* DB2              OUTDD(OUTDD1,TYPE(110)                          *          
+//* DB2P             OUTDD(OUTDD1,TYPE(30))                          *          
+//********************************************************************          
+//*                                                                             
+//SMFSEP00 EXEC PGM=IFASMFDP,REGION=0M                                          
+//*                                                                     00070000
+//IN       DD DISP=SHR,DCB=(BUFNO=80),                                          
+//            DSN=SYSBKR.SMFSEP.DDVTA1.PROD.DB2(+1)                             
+//*                                                                             
+//DB2      DD DSN=GXGES.ANDPRD.SMFDB2(+1),                                      
+//         DISP=(NEW,CATLG,DELETE),DSNTYPE=LARGE,                               
+//         UNIT=(WORKAP,P),VOL=(,,,40),                                         
+//         SPACE=(CYL,(2500,2500),RLSE),DSORG=PS,                               
+//         DCB=(GDG.MODEL,RECFM=VB,BLKSIZE=27500)                               
+//*                                                                             
+//SYSPRINT DD SYSOUT=X                                                          
+//SYSIN    DD DISP=SHR,DSN=SYS1.SOPTEC.CARDS($IN)                               
+//         DD DISP=SHR,DSN=SYS1.SOPTEC.CARDS($DB2)                              
+//*                                                                             
+//*                                                                             
+//********************************************************************          
+//*                   SORTSEP                                        *          
+//*            SMFSORT PROCESSING SYSV                               *          
+//********************************************************************          
+//*                                                                             
+//*$SMFSEP02 EXEC PGM=SORT,REGION=0M                                            
+//*$**                                                                          
+//*$SORTIN DD DISP=SHR,DSN=SYSBKR.SMFSEP.VTA1.PRD.SYSV.SORT(+1)                 
+//*$**                                                                          
+//*$SORTOUT DD DSN=SYSBKR.SMFSEP.DDVTA1.PROD.SYSV(+1),                          
+//*$          DISP=(NEW,CATLG,DELETE),                                          
+//*$          UNIT=DDVTA1,  VOL=(,,,99),                                        
+//*$          LABEL=(1,SL,EXPDT=99000),                                         
+//*$          DCB=(GDG.MODEL,BLKSIZE=32760,BUFNO=08)                            
+//*$*                                                                           
+//*$SORTWK01 DD UNIT=TEMPROD,SPACE=(CYL,(550,250))                              
+//*$SORTWK02 DD UNIT=TEMPROD,SPACE=(CYL,(550,150))                              
+//*$SORTWK03 DD UNIT=TEMPROD,SPACE=(CYL,(550,250))                              
+//*$SORTWK04 DD UNIT=TEMPROD,SPACE=(CYL,(550,250))                              
+//*$SORTWK05 DD UNIT=TEMPROD,SPACE=(CYL,(550,250))                              
+//*$SORTWK06 DD UNIT=TEMPROD,SPACE=(CYL,(550,250))                              
+//*$SORTWK07 DD UNIT=TEMPROD,SPACE=(CYL,(550,250))                              
+//*$SORTWK08 DD UNIT=TEMPROD,SPACE=(CYL,(550,250))                              
+//*$*                                                                           
+//*$SYSPRINT DD SYSOUT=X                                                        
+//*$SYSOUT DD SYSOUT=X                                                          
+//*$SYSIN  DD DISP=SHR,DSN=SYS1.SOPTEC.CARDS(SMFSEP1A)                          
+//*                                                                             
+//********************************************************************          
+//* SMFDMP  TAPE     EXTRACCION REGISTROS                            *          
+//* RACF    TAPE     OUTDD(OUTDD1,TYPE(7,17,14,15,20,21,80,81,83))   *          
+//********************************************************************          
+//*                                                                             
+//*$SMFSEP01 EXEC PGM=SORT,REGION=0M                                            
+//*$*                                                                   00070000
+//*$SORTIN DD DISP=SHR,DSN=SYSBKR.SMFSEP.DDVTA1.PROD.RACF(+1)                   
+//*$**                                                                          
+//*$SORTOUT DD DSN=GXGES.ANDPRD.SMF.DIA.RACF(+1),                               
+//*$         DISP=(NEW,CATLG,DELETE),                                           
+//*$         UNIT=(WORKGE,P),VOL=(,,,3),                                        
+//*$         SPACE=(CYL,(1750,500),RLSE),                                       
+//*$         DCB=(GDG.MODEL,BLKSIZE=27500,BUFNO=08)                             
+//*$*                                                                           
+//*$SORTWK01 DD UNIT=TEMPROD,SPACE=(CYL,(250,250))                              
+//*$SORTWK02 DD UNIT=TEMPROD,SPACE=(CYL,(250,250))                              
+//*$SORTWK03 DD UNIT=TEMPROD,SPACE=(CYL,(250,250))                              
+//*$SORTWK04 DD UNIT=TEMPROD,SPACE=(CYL,(250,250))                              
+//*$SORTWK05 DD UNIT=TEMPROD,SPACE=(CYL,(250,250))                              
+//*$SORTWK06 DD UNIT=TEMPROD,SPACE=(CYL,(250,250))                              
+//*$SORTWK07 DD UNIT=TEMPROD,SPACE=(CYL,(250,250))                              
+//*$SORTWK08 DD UNIT=TEMPROD,SPACE=(CYL,(250,250))                              
+//*$SORTWK09 DD UNIT=TEMPROD,SPACE=(CYL,(250,250))                              
+//*$*                                                                           
+//*$SYSPRINT DD SYSOUT=X                                                        
+//*$SYSOUT DD SYSOUT=X                                                          
+//*$SYSIN  DD DISP=SHR,DSN=SYS1.SOPTEC.CARDS(SMFSEP1A)                          
+//********************************************************************          
+//*                  FIN PROCEDIMIENTO                               *          
+//********************************************************************          

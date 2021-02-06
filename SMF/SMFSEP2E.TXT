@@ -1,0 +1,8 @@
+    INDD(IN,OPTIONS(DUMP))                                                      
+    OUTDD(CICS,TYPE(110))                                                       
+    OUTDD(R30,TYPE(30))                                                         
+    OUTDD(R6,TYPE(06))                                                          
+    OUTDD(RMF,TYPE(70:79,113))                                                  
+    OUTDD(SCRT,TYPE(70,72,89))                                                  
+    OUTDD(SYSV,TYPE(2,3,255))                                                   
+    OUTDD(RACF,TYPE(2,3,6,7,17,14,15,20,21,42,80,81,83))                        

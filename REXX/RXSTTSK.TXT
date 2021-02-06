@@ -1,0 +1,56 @@
+/* REXX */                                                                      
+                                                                                
+RC=ISFCALLS("ON")                                                               
+                                                                                
+     /*************************/                                                
+     /* ACCESS THE ST DISPLAY */                                                
+     /*************************/                                                
+ADDRESS SDSF "ISFEXEC ST"                                                       
+LRC=RC                                                                          
+CALL MSGRTN                                                                     
+IF LRC<>0 THEN                                                                  
+  EXIT 20                                                                       
+     /****************************/                                             
+     /* LOOP FOR ALL RJONES JOBS */                                             
+     /****************************/                                             
+DO IX=1 TO JNAME.0                                                              
+  IF JNAME.IX = "CICSBA02" THEN                                                 
+/*IF JNAME.IX = "TN6LMF" THEN */                                                
+    DO                                                                          
+        ADDRESS SDSF "ISFBROWSE ST TOKEN('"TOKEN.IX"')"                         
+        CALL MSGRTN                                                             
+        IF RC>4 THEN                                                            
+            EXIT 20                                                             
+            /****************************/                                      
+            /* LOOP THROUGH THE LINES   */                                      
+            /****************************/                                      
+        DO JX=1 TO ISFLINE.0                                                    
+           IF INDEX(ISFLINE.JX,' CEE') > 0 THEN                                 
+         SAY ISFLINE.JX                                                         
+           IF INDEX(ISFLINE.JX,' IGZ') > 0 THEN                                 
+         SAY ISFLINE.JX                                                         
+        END                                                                     
+    END                                                                         
+END                                                                             
+                                                                                
+RC=ISFCALLS("OFF")                                                              
+                                                                                
+EXIT                                                                            
+                                                                                
+     /*************************************/                                    
+     /* SUBROUTINE TO LIST ERROR MESSAGES */                                    
+     /*************************************/                                    
+MSGRTN: PROCEDURE EXPOSE ISFMSG ISFMSG2.                                        
+     /************************************************/                         
+     /* THE ISFMSG VARIABLE CONTAINS A SHORT MESSAGE */                         
+     /************************************************/                         
+IF ISFMSG<>"" THEN                                                              
+  SAY "ISFMSG IS:" ISFMSG                                                       
+     /* THE ISFMSG2 STEM CONTAINS ADDITIONAL DESCRIPTIVE */                     
+     /* ERROR MESSAGES                                   */                     
+     /****************************************************/                     
+DO IX=1 TO ISFMSG2.0                                                            
+  SAY "ISFMSG2."IX "IS:" ISFMSG2.IX                                             
+END                                                                             
+                                                                                
+RETURN                                                                          

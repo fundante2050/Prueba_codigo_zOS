@@ -1,0 +1,60 @@
+/* REXX */                                                                      
+                                                                                
+RC=ISFCALLS('ON')                                                               
+ISFSYSID="OSC"              /* MEMBER TO PROCESS */                             
+ISFDATE="MMDDYYYY /"        /* DATE FORMAT FOR SPECIAL VARIABLES */             
+CURRDAY=DATE("C")                                                               
+CURRDAY=CURRDAY-2           /* YESTERDAY */                                     
+ISFLOGSTARTDATE=DATE("U",CURRDAY,"C")   /* YESTERDAY IN MM/DD/YY */             
+ISFLOGSTARTTIME=TIME("N")   /* CURRENT TIME */                                  
+ISFLOGSTOPDATE=DATE("U")    /* CURRENT DATE IN MM/DD/YY */                      
+ISFLOGSTOPTIME=TIME("N")    /* CURRENT TIME */                                  
+                                                                                
+/* ISFFIND = '$HASP100'*/                                                       
+ISFFIND = ' IGZ'                                                                
+ISFFINDLIM = 9999999                                                            
+ISFSCROLLTYPE = 'FINDNEXT'                                                      
+ISFLINELIM = 1                                                                  
+                                                                                
+DO UNTIL ISFNEXTLINETOKEN=''                                                    
+   ADDRESS SDSF "ISFLOG READ TYPE(SYSLOG)"                                      
+                                                                                
+   LRC=RC                                                                       
+   IF LRC>4 THEN                                                                
+     DO                                                                         
+       CALL MSGRTN                                                              
+       EXIT 20                                                                  
+     END                                                                        
+   DO IX=1 TO ISFLINE.0        /* PROCESS THE RETURNED VARIABLES */             
+     SAY ISFLINE.IX                                                             
+   END                                                                          
+                                                                                
+   /*********************************************/                              
+   /* CONTINUE READING SYSLOG WHERE WE LEFT OFF */                              
+   /*********************************************/                              
+   ISFSTARTLINETOKEN = ISFNEXTLINETOKEN                                         
+END                                                                             
+RC=ISFCALLS("OFF")                                                              
+                                                                                
+EXIT                                                                            
+                                                                                
+     /*************************************/                                    
+     /* SUBROUTINE TO LIST ERROR MESSAGES */                                    
+     /*************************************/                                    
+     MSGRTN: PROCEDURE EXPOSE ISFMSG ISFMSG2.                                   
+                                                                                
+          /************************************************/                    
+          /* THE ISFMSG VARIABLE CONTAINS A SHORT MESSAGE */                    
+          /************************************************/                    
+     IF ISFMSG <> "" THEN                                                       
+       SAY "ISFMSG IS:" ISFMSG                                                  
+                                                                                
+          /****************************************************/                
+          /* THE ISFMSG2 STEM CONTAINS ADDITIONAL DESCRIPTIVE */                
+          /* ERROR MESSAGES                                   */                
+          /****************************************************/                
+     DO IX=1 TO ISFMSG2.0                                                       
+       SAY "ISFMSG2."IX "IS:" ISFMSG2.IX                                        
+     END                                                                        
+                                                                                
+     RETURN                                                                     

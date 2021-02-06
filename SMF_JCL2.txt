@@ -4,8 +4,8 @@
 //*    1. DB2                                                        *
 //********************************************************************
 IEFC653I SUBSTITUTION JCL - NOTIFY=TI6LRA,TIME=1440,CLASS=O           
-//SMFDMP   EXEC PGM=IFASMFDP,REGION=0M                         fundante    
-//********************************************************************
+//SMFDMP   EXEC PGM=IFASMFDP,REGION=0M               
+//***********************************************************
 //* DEPURAR EL WORKAP ANTES DE CORRER                                *
 //********************************************************************
 //IN       DD DISP=SHR,DSN=SYSBKR.SMF.PROD.DIA.RGGLOB.G0119V00 D171   
@@ -13,9 +13,8 @@ IEFC653I SUBSTITUTION JCL - NOTIFY=TI6LRA,TIME=1440,CLASS=O
 //DB2      DD DISP=(,CATLG,DELETE),                                   
 //         DSN=GXGES.ANDPRD.SMF2DB2.JUN19,                            
 //*        DSN=GXGES.ANDPRD.SMFDB2(+1),                               
-//         UNIT=(WORKAP,P),VOL=(,,,40),                               
-//         SPACE=(CYL,(9800,3200),RLSE),DSORG=PS,DSNTYPE=LARGE,  210206
-     
+//         UNIT=(WORKAP,P),VOL=(,,,40),                               210206
+//         SPACE=(CYL,(9800,3200),RLSE),DSORG=PS,DSNTYPE=LARGE,       
 //*        SPACE=(CYL,(6800,3200),RLSE),DSORG=PS,DSNTYPE=LARGE,       
 //*        SPACE=(CYL,(6800,1000),RLSE),DSORG=PS,DSNTYPE=LARGE,       
 //*        SPACE=(CYL,(9800,1000),RLSE),DSORG=PS,DSNTYPE=LARGE,          
