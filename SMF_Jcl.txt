@@ -1,0 +1,47 @@
+//SMDJUN19 JOB NOTIFY=&SYSUID,TIME=1440,CLASS=O                       
+//********************************************************************
+//* YOB PARA GENERAR CUANDO SE PIERDEN DIAS:                         *
+//*    1. DB2                                                        *
+//********************************************************************
+IEFC653I SUBSTITUTION JCL - NOTIFY=TI6LRA,TIME=1440,CLASS=O           
+//SMFDMP   EXEC PGM=IFASMFDP,REGION=0M                                git git git
+//********************************************************************
+//* DEPURAR EL WORKAP ANTES DE CORRER                                *
+//********************************************************************
+//IN       DD DISP=SHR,DSN=SYSBKR.SMF.PROD.DIA.RGGLOB.G0119V00 D171   
+//*        DD DISP=SHR,DSN=SYSBKR.SMFDMP.PROD.DIA.G4493V00 DXXX       
+//DB2      DD DISP=(,CATLG,DELETE),                                   
+//         DSN=GXGES.ANDPRD.SMF2DB2.JUN19,                            
+//*        DSN=GXGES.ANDPRD.SMFDB2(+1),                               
+//         UNIT=(WORKAP,P),VOL=(,,,40),                               
+//         SPACE=(CYL,(9800,3200),RLSE),DSORG=PS,DSNTYPE=LARGE,       
+//*        SPACE=(CYL,(6800,3200),RLSE),DSORG=PS,DSNTYPE=LARGE,       
+//*        SPACE=(CYL,(6800,1000),RLSE),DSORG=PS,DSNTYPE=LARGE,       
+//*        SPACE=(CYL,(9800,1000),RLSE),DSORG=PS,DSNTYPE=LARGE,          
+//         DCB=(GDG.MODEL,RECFM=VB,BLKSIZE=27500)                        
+//SYSPRINT DD SYSOUT=*                                                   
+//SYSIN    DD *                                                          
+SMF DUMP PARAMETERS                              
+NOSIGVALIDATE -- DEFAULT                         
+SIGSTRIP -- DEFAULT                              
+END(2400) -- DEFAULT                             
+START(0000) -- DEFAULT                           
+DATE(2020171,2020171) -- SYSIN                   
+OUTDD(DB2,TYPE(100,101,102)) -- SYSIN            
+INDD(IN,OPTIONS(DUMP)) -- SYSIN                  
+DB2      -- GXGES.ANDPRD.SMF2DB2.JUN19           
+IN       -- SYSBKR.SMF.PROD.DIA.RGGLOB.G0119V00        
+
+
+ SMF DUMP PARAMETERS                                       
+ NOSIGVALIDATE -- DEFAULT                                  
+ SIGSTRIP -- DEFAULT                                       
+ OUTDD(RGRMF,TYPE(70:79,113)) -- SYSIN                     
+ OUTDD(RGGLOB,TYPE(0:2047)) -- SYSIN                       
+ END(2400) -- SYSIN                                        
+ START(0000) -- SYSIN                                      
+ DATE(1900000,2099366) -- SYSIN                            
+ INDD(DUMPIN,OPTIONS(ALL)) -- SYSIN                        
+ RGRMF    -- GXGES.ANDPRD.SMF.RMF.G3154V00                 
+ RGGLOB   -- SYSBKR.SMF.PROD.DIA.RGGLOB.G0130V00           
+ DUMPIN   -- SYS1.PROD.MAN02                               
